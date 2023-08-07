@@ -20,13 +20,13 @@ export class AuthService {
           hash,
         },
       });
-      // delete hash from user object
+      // Delete hash from user object
       delete user.hash;
       // Return the saved user
       return user;
     } catch (error) {
       if (
-        // duplicate record errors
+        // Duplicate record error
         error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
@@ -35,7 +35,22 @@ export class AuthService {
     }
   }
 
-  signin() {
-    return { msg: 'signed in' };
+  async signin(dto: AuthDto) {
+    // Find the user by email
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    // If user does not exist - throw exception
+    if (!user) throw new ForbiddenException('Incorrect credentials / email');
+
+    // Compare password
+    const pwMatches = await argon.verify(user.hash, dto.password);
+    // If the password is incorrect - throw exception
+    if (!pwMatches) throw new ForbiddenException('Incorrect credentials / pwd');
+
+    // Delete hash from user object
+    delete user.hash;
+    // Return user
+    return user;
   }
 }
