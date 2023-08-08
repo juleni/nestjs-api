@@ -7,7 +7,6 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
   getMe(@Req() req: Request) {
-    console.log({ user: req.user });
-    return 'user info';
+    return req.user;
   }
 }
