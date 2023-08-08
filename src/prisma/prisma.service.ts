@@ -13,4 +13,13 @@ export class PrismaService extends PrismaClient {
       },
     });
   }
+
+  cleanDB() {
+    return this.$transaction([
+      this.bookmark.deleteMany(),
+      this.user.deleteMany(),
+    ]);
+
+    // Bookmarks can be cascade deleted by onDelete trigger within the Bookmark model (prisma schema)
+  }
 }
