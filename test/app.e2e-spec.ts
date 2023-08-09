@@ -68,6 +68,7 @@ describe('App e2e', () => {
         //.inspect(); // Show log in the console
       });
     });
+
     describe('Signin', () => {
       it('should throw error for empty email', () => {
         return pactum
@@ -101,15 +102,27 @@ describe('App e2e', () => {
           .spec()
           .post('/auth/signin')
           .withBody(dto)
-          .expectStatus(200);
+          .expectStatus(200)
+          .stores('userAt', 'access_token');
         //.inspect(); // Show log in the console
       });
     });
   });
-  describe('Users', () => {
-    describe('Get me', () => {});
+
+  describe('User', () => {
+    describe('Get me', () => {
+      it('should get current user', () => {
+        return pactum
+          .spec()
+          .get('/users/me')
+          .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+          .expectStatus(200);
+        //.inspect(); // Show log in the console
+      });
+    });
     describe('Edit user', () => {});
   });
+
   describe('Bookmarks', () => {
     describe('Get Bookmarks', () => {});
     describe('Get Bookmark by ID', () => {});
