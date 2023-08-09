@@ -117,8 +117,8 @@ describe('App e2e', () => {
           .spec()
           .get('/users/me')
           .withHeaders({ Authorization: 'Bearer $S{userAt}' })
-          .expectStatus(200)
-          .inspect(); // Show log in the console
+          .expectStatus(200);
+        // .inspect(); // Show log in the console
       });
     });
     describe('Edit user', () => {
@@ -133,7 +133,9 @@ describe('App e2e', () => {
           .withBody(dto)
           .withHeaders({ Authorization: 'Bearer $S{userAt}' })
           .expectStatus(200)
-          .inspect(); // Show log in the console
+          .expectBodyContains(dto.firstName)
+          .expectBodyContains(dto.email);
+        // .inspect(); // Show log in the console
       });
     });
   });
